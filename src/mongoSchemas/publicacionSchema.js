@@ -1,12 +1,32 @@
-const Joi = require("joi");
+const mongoose = require('mongoose');
 
-const publicacionSchema = Joi.object({
-  descripcion: Joi.string().min(4).max(250).required().messages({
-    "string.empty": "La descripcion de la publicacion no puede ser vacía",
-    "string.min": "La descripcion tiene que tener al menos 4 caracteres",
-    "string.max": "La descripcion tiene que tener como maximo 250 caracteres",
-    "any.required": "El atributo descripcion debe existir",
-  }),
+const publicacionSchema = new mongoose.Schema({
+  titulo: {
+    type: String,
+    required: true,
+  },
+  contenido: {
+    type: String,
+    required: true,
+  },
+  usuarioId: { 
+    type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' 
+  },
+  tags: [{ 
+    type: mongoose.Schema.Types.ObjectId, ref: 'Tag' 
+  }],
+  imagenes: [{
+    type: mongoose.Schema.Types.ObjectId, ref: 'Imagen'
+  }]
 });
 
-module.exports = publicacionSchema;
+publicacionSchema.set('toJSON', {
+  transform: (_, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+    delete ret.__v;
+  }
+});
+
+const Publicacion = mongoose.model('Publicacion', publicacionSchema);
+module.exports = Publicacion;

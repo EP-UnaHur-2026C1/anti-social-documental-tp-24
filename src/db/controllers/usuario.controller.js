@@ -1,12 +1,12 @@
 const Usuario = require('../../mongoSchemas/usuarioSchema');
 
-const getUsuarios = async (req, res) => {
+const getUsuarios = async (_, res) => {
   const usuarios = await Usuario.find();
   res.status(200).json(usuarios);
 };
 
 const getUsuarioById = async (req, res) => {
-  const usuario = await Usuario.findById(req.params.id);
+  const usuario = await Usuario.findById(req.params.usuarioId);
   res.status(200).json(usuario);
 };
 

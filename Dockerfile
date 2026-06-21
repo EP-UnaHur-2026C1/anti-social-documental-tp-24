@@ -10,4 +10,6 @@ COPY src .
 
 ENV PORT=4001
 
+ENV COMENTARIO_MAX_MESES=6
+
 CMD ["node", "main.js"]

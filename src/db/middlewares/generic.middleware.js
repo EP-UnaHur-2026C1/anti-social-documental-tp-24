@@ -1,12 +1,15 @@
 const validarById = (modelo, paramName = "id") => {
   return async (req, res, next) => {
-    const id = req.params[paramName];
-    const instance = await modelo.findByPk(id);
-    if (!instance) {
-      res.status(404).json({ error_message: `${modelo.name} con id ${id} no fue encontrado/a.` });
-      return;
+    try {
+      const id = req.params[paramName] || req.body[paramName];
+      const instance = await modelo.findById(id);
+      if (!instance) {
+        return res.status(404).json({ error: `${modelo.modelName} con id ${id} no fue encontrado.` });
+      }
+      next();
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-    next();
   };
 };
 

@@ -1,0 +1,174 @@
+{
+  "info": {
+    "name": "API Anti-Social Net",
+    "_postman_id": "12345678-abcd-efgh-ijkl-987654321000",
+    "description": "Colección de pruebas para la API Anti-Social Net",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/usuarios"
+          }
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:5000/usuarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nickname\": \"Luca\", \"email\": \"luca@gmail.com\", \"password\": \"1234\" }"
+            }
+          }
+        },
+        {
+          "name": "Obtener usuario por ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/usuarios/{{usuarioId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Publicaciones",
+      "item": [
+        {
+          "name": "Listar publicaciones",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/publicaciones"
+          }
+        },
+        {
+          "name": "Crear publicación para usuario",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:5000/usuarios/{{usuarioId}}/publicaciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"titulo\": \"Mi primera publicación\", \"contenido\": \"¡Hola mundo!\" }"
+            }
+          }
+        },
+        {
+          "name": "Obtener publicación por ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/publicaciones/{{publicacionId}}"
+          }
+        },
+        {
+          "name": "Eliminar publicación por ID",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:5000/publicaciones/{{publicacionId}}"
+          }
+        },
+        {
+          "name": "Eliminar publicación por usuarioId",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:5000/usuarios/{{usuarioId}}/publicaciones/{{publicacionId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Imágenes",
+      "item": [
+        {
+          "name": "Listar imágenes",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/imagenes"
+          }
+        },
+        {
+          "name": "Crear imagen",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:5000/imagenes",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"url\": \"http://example.com/imagen.png\", \"publicacionId\": \"{{publicacionId}}\" }"
+            }
+          }
+        },
+        {
+          "name": "Eliminar imagen",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:5000/imagenes/{{imagenId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comentarios",
+      "item": [
+        {
+          "name": "Listar comentarios",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/comentarios"
+          }
+        },
+        {
+          "name": "Crear comentario en publicación",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:5000/publicaciones/{{publicacionId}}/comentarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"contenido\": \"Hola\", \"usuarioId\": \"{{usuarioId}}\" }"
+            }
+          }
+        },
+        {
+          "name": "Eliminar comentario",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:5000/comentarios/{{comentarioId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Listar tags",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/tags"
+          }
+        },
+        {
+          "name": "Crear tag",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:5000/tags",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"tag\": \"Playa\" }"
+            }
+          }
+        },
+        {
+          "name": "Eliminar tag",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:5000/tags/{{tagId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -26,5 +26,6 @@ services:
     environment:
       - PORT=4001
       - MONGO_URL=mongodb://root:example@database:27017/unahur?authSource=admin
+      - CANTIDAD_MAX_MESES:6
     depends_on:
       - database

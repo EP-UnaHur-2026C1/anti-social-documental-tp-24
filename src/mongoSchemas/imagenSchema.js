@@ -10,8 +10,7 @@ const imagenSchema = new mongoose.Schema({
   },
   publicacionId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Publicacion', 
-    required: true 
+    ref: 'Publicacion'
   },
   createdAt: { 
     type: Date,

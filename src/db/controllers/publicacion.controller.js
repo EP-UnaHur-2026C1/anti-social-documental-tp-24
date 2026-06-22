@@ -2,43 +2,43 @@ const Publicacion = require('../../mongoSchemas/publicacionSchema');
 const Usuario = require('../../mongoSchemas/usuarioSchema');
 
 const getPublicaciones = async (_, res) => {
-  try {
+  try{
     const publicaciones = await Publicacion.find()
       .populate('usuarioId', 'nickname email')
       .populate('tags', 'tag');
     res.status(200).json(publicaciones);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  }
+  catch(error){
+    next(error);
   }
 };
 
 const getPublicacionesByUsuarioId = async (req, res) => {
-  try {
+  try{
     const usuarioId = req.params.usuarioId;
     const publicaciones = await Publicacion.find({ usuarioId })
       .populate('usuarioId', 'nickname email')
       .populate('tags', 'tag');
     res.status(200).json(publicaciones);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  }
+  catch(error){
+    next(error);
   }
 };
 
 const getPublicacionById = async (req, res) => {
-  try {
-    const publicacion = await Publicacion.findById(req.params.id)
+  try{
+    const publicacion = await Publicacion.findById(req.params.publicacionId)
       .populate('usuarioId', 'nickname email')
       .populate('tags', 'tag');
-    if (!publicacion) {
-      return res.status(404).json({ error: 'Publicación no encontrada' });
-    }
     res.status(200).json(publicacion);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  }
+  catch(error){
+    next(error);
   }
 };
 
-const createPublicacion = async (req, res) => {
+const createPublicacion = async (req, res, next) => {
   try {
     const { titulo, contenido, tags } = req.body
     const { usuarioId } = req.params;
@@ -50,9 +50,38 @@ const createPublicacion = async (req, res) => {
       tags
     });
     res.status(201).json(nuevaPublicacion);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+  } 
+  catch (error) {
+    next(error)
   }
 };
 
-module.exports = { getPublicaciones, getPublicacionesByUsuarioId, getPublicacionById, createPublicacion };
+const deletePublicacion = async (req, res, next) => {
+  try {
+    const { publicacionId } = req.params;
+    const publicacion = await Publicacion.findByIdAndDelete(publicacionId);
+    res.status(200).json({ message: 'Publicación eliminada correctamente' });
+  }
+  catch (error) {
+    next(error);
+  }
+};
+
+const deletePublicacionByUsuarioId = async (req, res, next) => {
+  try {
+    const { usuarioId, publicacionId } = req.params;
+    const publicacion = await Publicacion.findOneAndDelete({ _id: publicacionId, usuarioId });
+    res.status(200).json({ message: 'Publicación eliminada correctamente' });
+  } 
+  catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getPublicaciones,
+  getPublicacionesByUsuarioId,
+  getPublicacionById,
+  createPublicacion,
+  deletePublicacion,
+  deletePublicacionByUsuarioId };

@@ -1,23 +1,20 @@
-
 openapi: 3.0.0
-
 info:
   title: API Blog
   version: 1.0.0
-  description: |
-    API REST desarrollada con Express y MongoDB.
+  description: 'API REST desarrollada con Express y MongoDB.
+
     Unahur Anti-Social Net
 
+    '
 servers:
-  - url: http://localhost:5000
-
+- url: http://localhost:5000
 tags:
-  - name: Usuarios
-  - name: Publicaciones
-  - name: Comentarios
-  - name: Imagenes
-  - name: Tags
-
+- name: Usuarios
+- name: Publicaciones
+- name: Comentarios
+- name: Imagenes
+- name: Tags
 components:
   parameters:
     usuarioId:
@@ -26,40 +23,37 @@ components:
       required: true
       schema:
         type: string
-
     publicacionId:
       name: publicacionId
       in: path
       required: true
       schema:
         type: string
-
     comentarioId:
       name: comentarioId
       in: path
       required: true
       schema:
         type: string
-
     imagenId:
       name: imagenId
       in: path
       required: true
       schema:
         type: string
-
     tagId:
       name: tagId
       in: path
       required: true
       schema:
         type: string
-
   schemas:
-
     Usuario:
       type: object
-      required: [nickname, email, password]
+      required:
+      - nickname
+      - email
+      - password
       properties:
         id:
           type: string
@@ -69,10 +63,11 @@ components:
           type: string
         password:
           type: string
-
     Publicacion:
       type: object
-      required: [titulo, contenido]
+      required:
+      - titulo
+      - contenido
       properties:
         id:
           type: string
@@ -86,10 +81,11 @@ components:
           type: array
           items:
             type: string
-
     Comentario:
       type: object
-      required: [contenido, usuarioId]
+      required:
+      - contenido
+      - usuarioId
       properties:
         id:
           type: string
@@ -102,10 +98,10 @@ components:
         createdAt:
           type: string
           format: date-time
-
     Imagen:
       type: object
-      required: [url]
+      required:
+      - url
       properties:
         id:
           type: string
@@ -118,82 +114,81 @@ components:
         createdAt:
           type: string
           format: date-time
-
     Tag:
       type: object
-      required: [tag]
+      required:
+      - tag
       properties:
         id:
           type: string
         tag:
           type: string
-
     Error:
       type: object
       properties:
         error:
           type: string
-
 paths:
-
   /usuarios:
     get:
-      tags: [Usuarios]
+      tags:
+      - Usuarios
       summary: Obtener todos los usuarios
       responses:
-        "200":
+        '200':
           description: Lista de usuarios
-
     post:
-      tags: [Usuarios]
+      tags:
+      - Usuarios
       summary: Crear usuario
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Usuario"
+              $ref: '#/components/schemas/Usuario'
             example:
               nickname: luca
               email: luca@gmail.com
               password: 123456
       responses:
-        "201":
+        '201':
           description: Usuario creado
-
   /usuarios/{usuarioId}:
     get:
-      tags: [Usuarios]
+      tags:
+      - Usuarios
       summary: Obtener usuario por ID
       parameters:
-        - $ref: "#/components/parameters/usuarioId"
+      - $ref: '#/components/parameters/usuarioId'
       responses:
-        "200":
+        '200':
           description: Usuario encontrado
     delete:
-      tags: [Usuarios]
+      tags:
+      - Usuarios
       summary: Eliminar usuario
       parameters:
-        - $ref: "#/components/parameters/usuarioId"
+      - $ref: '#/components/parameters/usuarioId'
       responses:
-        "200":
+        '200':
           description: Usuario eliminado
-
   /usuarios/{usuarioId}/publicaciones:
     get:
-      tags: [Publicaciones]
+      tags:
+      - Publicaciones
       summary: Obtener publicaciones de un usuario
       parameters:
-        - $ref: "#/components/parameters/usuarioId"
+      - $ref: '#/components/parameters/usuarioId'
       responses:
-        "200":
+        '200':
           description: Lista de publicaciones
-
     post:
-      tags: [Publicaciones]
+      tags:
+      - Publicaciones
       summary: Crear publicación para un usuario
       parameters:
-        - $ref: "#/components/parameters/usuarioId"
+      - $ref: '#/components/parameters/usuarioId'
       requestBody:
         required: true
         content:
@@ -203,62 +198,62 @@ paths:
               contenido: Contenido de ejemplo
               tags: []
       responses:
-        "201":
+        '201':
           description: Publicación creada
-
   /usuarios/{usuarioId}/publicaciones/{publicacionId}:
     delete:
-      tags: [Publicaciones]
+      tags:
+      - Publicaciones
       summary: Eliminar publicación de un usuario
       parameters:
-        - $ref: "#/components/parameters/usuarioId"
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/usuarioId'
+      - $ref: '#/components/parameters/publicacionId'
       responses:
-        "200":
+        '200':
           description: Publicación eliminada
-
   /publicaciones:
     get:
-      tags: [Publicaciones]
+      tags:
+      - Publicaciones
       summary: Obtener todas las publicaciones
       responses:
-        "200":
+        '200':
           description: Lista de publicaciones
-
   /publicaciones/{publicacionId}:
     get:
-      tags: [Publicaciones]
+      tags:
+      - Publicaciones
       summary: Obtener publicación por ID
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/publicacionId'
       responses:
-        "200":
+        '200':
           description: Publicación encontrada
-
     delete:
-      tags: [Publicaciones]
+      tags:
+      - Publicaciones
       summary: Eliminar publicación
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/publicacionId'
       responses:
-        "200":
+        '200':
           description: Publicación eliminada
-
   /publicaciones/{publicacionId}/imagenes:
     get:
-      tags: [Imagenes]
+      tags:
+      - Imagenes
       summary: Obtener imágenes de una publicación
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/publicacionId'
       responses:
-        "200":
+        '200':
           description: Lista de imágenes
-
     post:
-      tags: [Imagenes]
+      tags:
+      - Imagenes
       summary: Crear imagen asociada a una publicación
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/publicacionId'
       requestBody:
         required: true
         content:
@@ -266,24 +261,24 @@ paths:
             example:
               url: https://miweb.com/imagen.jpg
       responses:
-        "201":
+        '201':
           description: Imagen creada
-
   /publicaciones/{publicacionId}/comentarios:
     get:
-      tags: [Comentarios]
+      tags:
+      - Comentarios
       summary: Obtener comentarios de una publicación
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/publicacionId'
       responses:
-        "200":
+        '200':
           description: Lista de comentarios
-
     post:
-      tags: [Comentarios]
+      tags:
+      - Comentarios
       summary: Crear comentario
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/publicacionId'
       requestBody:
         required: true
         content:
@@ -292,26 +287,26 @@ paths:
               usuarioId: 684abc123
               contenido: Excelente publicación
       responses:
-        "201":
+        '201':
           description: Comentario creado
-
   /publicaciones/{publicacionId}/comentarios/{comentarioId}:
     delete:
-      tags: [Comentarios]
+      tags:
+      - Comentarios
       summary: Eliminar comentario de una publicación
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
-        - $ref: "#/components/parameters/comentarioId"
+      - $ref: '#/components/parameters/publicacionId'
+      - $ref: '#/components/parameters/comentarioId'
       responses:
-        "200":
+        '200':
           description: Comentario eliminado
-
   /publicaciones/{publicacionId}/tags:
     post:
-      tags: [Tags]
+      tags:
+      - Tags
       summary: Asociar tag a publicación
       parameters:
-        - $ref: "#/components/parameters/publicacionId"
+      - $ref: '#/components/parameters/publicacionId'
       requestBody:
         required: true
         content:
@@ -319,19 +314,26 @@ paths:
             example:
               tagId: 684abc123
       responses:
-        "201":
+        '201':
           description: Tag asociado
-
+    get:
+      tags:
+      - Tags
+      summary: Listar tags de una publicación
+      responses:
+        '200':
+          description: Lista de tags
   /tags:
     get:
-      tags: [Tags]
+      tags:
+      - Tags
       summary: Obtener tags
       responses:
-        "200":
+        '200':
           description: Lista de tags
-
     post:
-      tags: [Tags]
+      tags:
+      - Tags
       summary: Crear tag
       requestBody:
         required: true
@@ -340,38 +342,38 @@ paths:
             example:
               tag: backend
       responses:
-        "201":
+        '201':
           description: Tag creado
-
   /tags/{tagId}:
     get:
-      tags: [Tags]
+      tags:
+      - Tags
       summary: Obtener tag por ID
       parameters:
-        - $ref: "#/components/parameters/tagId"
+      - $ref: '#/components/parameters/tagId'
       responses:
-        "200":
+        '200':
           description: Tag encontrado
-
     delete:
-      tags: [Tags]
+      tags:
+      - Tags
       summary: Eliminar tag
       parameters:
-        - $ref: "#/components/parameters/tagId"
+      - $ref: '#/components/parameters/tagId'
       responses:
-        "200":
+        '200':
           description: Tag eliminado
-
   /imagenes:
     get:
-      tags: [Imagenes]
+      tags:
+      - Imagenes
       summary: Obtener todas las imágenes
       responses:
-        "200":
+        '200':
           description: Lista de imágenes
-
     post:
-      tags: [Imagenes]
+      tags:
+      - Imagenes
       summary: Crear imagen
       requestBody:
         required: true
@@ -380,51 +382,51 @@ paths:
             example:
               url: https://miweb.com/foto.jpg
       responses:
-        "201":
+        '201':
           description: Imagen creada
-
   /imagenes/{imagenId}:
     get:
-      tags: [Imagenes]
+      tags:
+      - Imagenes
       summary: Obtener imagen por ID
       parameters:
-        - $ref: "#/components/parameters/imagenId"
+      - $ref: '#/components/parameters/imagenId'
       responses:
-        "200":
+        '200':
           description: Imagen encontrada
-
     delete:
-      tags: [Imagenes]
+      tags:
+      - Imagenes
       summary: Eliminar imagen
       parameters:
-        - $ref: "#/components/parameters/imagenId"
+      - $ref: '#/components/parameters/imagenId'
       responses:
-        "200":
+        '200':
           description: Imagen eliminada
-
   /comentarios:
     get:
-      tags: [Comentarios]
+      tags:
+      - Comentarios
       summary: Obtener todos los comentarios
       responses:
-        "200":
+        '200':
           description: Lista de comentarios
-
   /comentarios/{comentarioId}:
     get:
-      tags: [Comentarios]
+      tags:
+      - Comentarios
       summary: Obtener comentario por ID
       parameters:
-        - $ref: "#/components/parameters/comentarioId"
+      - $ref: '#/components/parameters/comentarioId'
       responses:
-        "200":
+        '200':
           description: Comentario encontrado
-
     delete:
-      tags: [Comentarios]
+      tags:
+      - Comentarios
       summary: Eliminar comentario
       parameters:
-        - $ref: "#/components/parameters/comentarioId"
+      - $ref: '#/components/parameters/comentarioId'
       responses:
-        "200":
+        '200':
           description: Comentario eliminado

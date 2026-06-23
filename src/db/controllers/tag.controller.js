@@ -1,8 +1,14 @@
 const Tag = require('../../mongoSchemas/tagSchema');
+const redisClient = require('../redis');
 
 const getTags = async (_, res) => {
   try{
+    const cached = await redisClient.get('tags');
+    if (cached) {
+      return res.status(200).json(JSON.parse(cached));
+    }
     const tags = await Tag.find();
+    await redisClient.setEx('tags', 60, JSON.stringify(tags)); //muy raramente se crearán tags, por lo que se puede cachear por más tiempo
     res.status(200).json(tags);
   }
   catch(error){
@@ -58,4 +64,28 @@ const deleteTag = async (req, res, next) => {
   }
 };
 
-module.exports = { getTags, getTagById, createTag, addTagToPublicacion, deleteTag };
+const getTagsByPublicacionId = async (req, res) => {
+  try {
+    const { publicacionId } = req.params;
+    const publicacion = await Publicacion.findById(publicacionId).populate('tags');
+    res.status(200).json(publicacion.tags);
+  } 
+  catch (error) {
+    next(error);
+  }
+};
+
+const deleteTagFromPublicacion = async (req, res, next) => {
+  try {
+    const { publicacionId, tagId } = req.params;
+    const publicacion = await Publicacion.findById(publicacionId);
+    publicacion.tags.pull(tagId);
+    await publicacion.save();
+    res.status(200).json({ message: 'Tag eliminado de la publicación correctamente' });
+  }
+  catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getTags, getTagById, createTag, addTagToPublicacion, deleteTag, getTagsByPublicacionId, deleteTagFromPublicacion };

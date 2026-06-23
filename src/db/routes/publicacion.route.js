@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getPublicaciones, getPublicacionesByUsuarioId, getPublicacionById, deletePublicacion } = require('../controllers/publicacion.controller');
-const { createImagenByPublicacionId, getImagenesByPublicacionId } = require('../controllers/imagen.controller');
+const { createImagenByPublicacionId, getImagenesByPublicacionId, deleteImagenByPublicacionId } = require('../controllers/imagen.controller');
 const { createComentario, getComentariosByPublicacionId, deleteComentarioByPublicacionId } = require('../controllers/comentario.controller')
-const { addTagToPublicacion } = require('../controllers/tag.controller')
-const { validarPublicacionById, validarComentarioById, validarImagenById } = require('../middlewares/validacionesById.middleware')
+const { getTagsByPublicacionId, addTagToPublicacion, deleteTagFromPublicacion } = require('../controllers/tag.controller')
+const { validarPublicacionById, validarComentarioById, validarImagenById, validarTagById } = require('../middlewares/validacionesById.middleware')
 
 router.get('/', getPublicaciones); // localhost:5000/publicaciones
 router.get('/:publicacionId', validarPublicacionById, getPublicacionById);
@@ -13,6 +13,7 @@ router.delete('/:publicacionId', validarPublicacionById, deletePublicacion);
 //Ruta para imagenes (requiere publicacionId)
 router.get('/:publicacionId/imagenes', validarPublicacionById, getImagenesByPublicacionId);
 router.post('/:publicacionId/imagenes', validarPublicacionById, createImagenByPublicacionId);
+router.delete('/:publicacionId/imagenes/:imagenId', validarPublicacionById, validarImagenById, deleteImagenByPublicacionId);
 
 //Para comentarios (requieren publicacionId)
 router.get('/:publicacionId/comentarios', validarPublicacionById, getComentariosByPublicacionId)
@@ -20,6 +21,8 @@ router.post('/:publicacionId/comentarios', validarPublicacionById, createComenta
 router.delete('/:publicacionId/comentarios/:comentarioId', validarPublicacionById, validarComentarioById, deleteComentarioByPublicacionId)
 
 //Para tags (requieren publicacionId)
+router.get('/:publicacionId/tags', validarPublicacionById, getTagsByPublicacionId);
 router.post('/:publicacionId/tags', validarPublicacionById, addTagToPublicacion);
+router.delete('/:publicacionId/tags/:tagId', validarPublicacionById, validarTagById, deleteTagFromPublicacion);
 
 module.exports = router;

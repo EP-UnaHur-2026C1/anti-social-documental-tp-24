@@ -1,10 +1,16 @@
 const Imagen = require('../../mongoSchemas/imagenSchema');
 const Publicacion = require('../../mongoSchemas/publicacionSchema');
+const redisClient = require('../redis');
 
 const getImagenes = async (_, res) => {
   try{
+    const cached = await redisClient.get('imagenes');
+    if (cached) {
+      return res.status(200).json(JSON.parse(cached));
+    }
     const imagenes = await Imagen.find()
       .populate('publicacionId', 'titulo contenido');
+    await redisClient.setEx('imagenes', 60, JSON.stringify(imagenes)); //no siempre se crearán imagenes, por lo que se puede cachear por más tiempo
     res.status(200).json(imagenes);
   }
   catch(error){
@@ -76,11 +82,23 @@ const getImagenesByPublicacionId = async (req, res) => {
   }
 };
 
+const deleteImagenByPublicacionId = async (req, res, next) => {
+  try {
+    const { publicacionId } = req.params;
+    const imagen = await Imagen.findOneAndDelete({ publicacionId });
+    res.status(200).json({ message: 'Imagen eliminada correctamente' });
+  }
+  catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getImagenes,
   getImagenById,
   createImagen,
   deleteImagen,
   getImagenesByPublicacionId,
+  deleteImagenByPublicacionId,
   createImagenByPublicacionId
 };

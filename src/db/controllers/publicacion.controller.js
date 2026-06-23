@@ -1,14 +1,21 @@
 const Publicacion = require('../../mongoSchemas/publicacionSchema');
 const Usuario = require('../../mongoSchemas/usuarioSchema');
+const redisClient = require('../redis');
 
 const getPublicaciones = async (_, res) => {
-  try{
-    const publicaciones = await Publicacion.find()
+  try {
+    const cached = await redisClient.get('publicaciones');
+    //revisa si está en caché
+    if (cached) {
+      return res.status(200).json(JSON.parse(cached));
+    }
+    const publicaciones = await Publicacion.find() //sino lo consulta a mongo
       .populate('usuarioId', 'nickname email')
       .populate('tags', 'tag');
+    await redisClient.setEx('publicaciones', 30, JSON.stringify(publicaciones)); //y lo guarda en chaché 30s
+
     res.status(200).json(publicaciones);
-  }
-  catch(error){
+  } catch (error) {
     next(error);
   }
 };

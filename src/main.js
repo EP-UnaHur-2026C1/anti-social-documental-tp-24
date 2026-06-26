@@ -13,10 +13,14 @@ const imagenRoutes = require('./db/routes/imagen.route');
 const comentarioRoutes = require('./db/routes/comentario.route');
 const validador = require('./db/middlewares/validador.middleware');
 
+const cors = require('cors');
+
+
 const PORT = process.env.PORT ?? 4000;
 
-app.use(express.json());
 
+app.use(express.json());
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use('/usuarios', usuarioRoutes); // localhost:5000/usuarios
 app.use('/tags', tagRoutes); // localhost:5000/tags
 app.use('/publicaciones', publicacionRoutes); // localhost:5000/publicaciones

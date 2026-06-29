@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Imagen = require('./imagenSchema');
+const Comentario = require('./comentarioSchema');
 
 const publicacionSchema = new mongoose.Schema({
   titulo: {
@@ -21,24 +23,22 @@ const publicacionSchema = new mongoose.Schema({
 });
 
 //Middlewares para eliminar comentarios y referencias a imágenes asociados a la publicación al eliminarla
-publicacionSchema.pre('findOneAndDelete', async function (next) {
+publicacionSchema.pre('findOneAndDelete', async function () {
   const publicacionId = this.getQuery()._id;
   await Imagen.updateMany(
     { publicacionId },
     { $unset: { publicacionId: "" } } //elimina la referencia
   );
   await Comentario.deleteMany({ publicacionId });
-  next();
 });
 
-publicacionSchema.pre('findByIdAndDelete', async function (next) {
+publicacionSchema.pre('findByIdAndDelete', async function () {
   const publicacionId = this.getQuery()._id;
   await Imagen.updateMany(
     { publicacionId },
     { $unset: { publicacionId: "" } }
   );
   await Comentario.deleteMany({ publicacionId });
-  next();
 });
 
 publicacionSchema.set('toJSON', {

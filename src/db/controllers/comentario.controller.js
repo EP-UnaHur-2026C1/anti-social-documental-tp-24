@@ -37,6 +37,9 @@ const createComentario = async (req, res, next) => {
       usuarioId,
       publicacionId
     });
+    await Publicacion.findByIdAndUpdate(publicacion._id, {
+      $push: { comentarios: nuevoComentario._id }
+    });
     res.status(201).json(nuevoComentario);
   } 
   catch (error) {

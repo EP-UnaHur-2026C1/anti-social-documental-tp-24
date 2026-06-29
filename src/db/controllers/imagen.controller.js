@@ -53,6 +53,10 @@ const createImagenByPublicacionId = async (req, res, next) => {
       url,
       publicacionId
     });
+    // actualizar la publicación para que guarde la referencia
+    await Publicacion.findByIdAndUpdate(publicacion._id, {
+      $push: { imagenes: nuevaImagen._id }
+    });
     res.status(201).json(nuevaImagen);
   } 
   catch (error) {

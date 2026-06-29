@@ -1,5 +1,6 @@
 const Publicacion = require('../../mongoSchemas/publicacionSchema');
 const Usuario = require('../../mongoSchemas/usuarioSchema');
+const Imagen = require('../../mongoSchemas/imagenSchema'); 
 const redisClient = require('../redis');
 
 const getPublicaciones = async (_, res) => {
@@ -66,10 +67,19 @@ const createPublicacion = async (req, res, next) => {
 const deletePublicacion = async (req, res, next) => {
   try {
     const { publicacionId } = req.params;
+
+    // borrar publicación
     const publicacion = await Publicacion.findByIdAndDelete(publicacionId);
-    res.status(200).json({ message: 'Publicación eliminada correctamente' });
-  }
-  catch (error) {
+
+    if (!publicacion) {
+      return res.status(404).json({ error: 'Publicación no encontrada' });
+    }
+
+    // borrar imágenes asociadas
+    await Imagen.deleteMany({ publicacionId });
+
+    res.status(200).json({ message: 'Publicación e imágenes eliminadas correctamente' });
+  } catch (error) {
     next(error);
   }
 };
@@ -77,13 +87,21 @@ const deletePublicacion = async (req, res, next) => {
 const deletePublicacionByUsuarioId = async (req, res, next) => {
   try {
     const { usuarioId, publicacionId } = req.params;
+
     const publicacion = await Publicacion.findOneAndDelete({ _id: publicacionId, usuarioId });
-    res.status(200).json({ message: 'Publicación eliminada correctamente' });
-  } 
-  catch (error) {
+
+    if (!publicacion) {
+      return res.status(404).json({ error: 'Publicación no encontrada' });
+    }
+
+    await Imagen.deleteMany({ publicacionId });
+
+    res.status(200).json({ message: 'Publicación e imágenes eliminadas correctamente' });
+  } catch (error) {
     next(error);
   }
 };
+
 
 module.exports = {
   getPublicaciones,

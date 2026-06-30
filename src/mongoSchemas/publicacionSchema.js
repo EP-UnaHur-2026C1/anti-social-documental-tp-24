@@ -20,6 +20,9 @@ const publicacionSchema = new mongoose.Schema({
   imagenes: [{
     type: mongoose.Schema.Types.ObjectId, ref: 'Imagen'
   }]
+}, {
+  collection: 'publicaciones',
+  timestamps: false
 });
 
 //Middlewares para eliminar comentarios y referencias a imágenes asociados a la publicación al eliminarla

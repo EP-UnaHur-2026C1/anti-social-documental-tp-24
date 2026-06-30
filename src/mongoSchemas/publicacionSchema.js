@@ -19,7 +19,10 @@ const publicacionSchema = new mongoose.Schema({
   }],
   imagenes: [{
     type: mongoose.Schema.Types.ObjectId, ref: 'Imagen'
-  }]
+  }],
+  comentarios: [{
+    type: mongoose.Schema.Types.ObjectId, ref: 'Comentario'
+  }],
 }, {
   collection: 'publicaciones',
   timestamps: false

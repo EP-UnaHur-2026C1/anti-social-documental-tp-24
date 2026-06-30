@@ -12,7 +12,16 @@ const getPublicaciones = async (_, res) => {
     }
     const publicaciones = await Publicacion.find() //sino lo consulta a mongo
       .populate('usuarioId', 'nickname email')
-      .populate('tags', 'tag');
+      .populate('tags', 'tag')
+      .populate('imagenes', 'url descripcion')
+      .populate({
+        path: 'comentarios',
+        select: 'contenido createdAt',
+        populate: {
+          path: 'usuarioId',
+          select: 'nickname'
+        }
+      });
     await redisClient.setEx('publicaciones', 30, JSON.stringify(publicaciones)); //y lo guarda en chaché 30s
 
     res.status(200).json(publicaciones);
@@ -26,7 +35,16 @@ const getPublicacionesByUsuarioId = async (req, res) => {
     const usuarioId = req.params.usuarioId;
     const publicaciones = await Publicacion.find({ usuarioId })
       .populate('usuarioId', 'nickname email')
-      .populate('tags', 'tag');
+      .populate('tags', 'tag')
+      .populate('imagenes', 'url descripcion')
+      .populate({
+        path: 'comentarios',
+        select: 'contenido createdAt',
+        populate: {
+          path: 'usuarioId',
+          select: 'nickname'
+        }
+      });
     res.status(200).json(publicaciones);
   }
   catch(error){
@@ -38,7 +56,16 @@ const getPublicacionById = async (req, res) => {
   try{
     const publicacion = await Publicacion.findById(req.params.publicacionId)
       .populate('usuarioId', 'nickname email')
-      .populate('tags', 'tag');
+      .populate('tags', 'tag')
+      .populate('imagenes', 'url descripcion')
+      .populate({
+        path: 'comentarios',
+        select: 'contenido createdAt',
+        populate: {
+          path: 'usuarioId',
+          select: 'nickname'
+        }
+      });
     res.status(200).json(publicacion);
   }
   catch(error){

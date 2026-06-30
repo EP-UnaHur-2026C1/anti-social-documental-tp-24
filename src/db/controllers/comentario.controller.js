@@ -1,6 +1,7 @@
 const Comentario = require('../../mongoSchemas/comentarioSchema');
 const Usuario = require('../../mongoSchemas/usuarioSchema');
 const Publicacion = require('../../mongoSchemas/publicacionSchema');
+const mongoose = require('mongoose');
 
 const getComentarios = async (req, res) => {
   try{
@@ -28,24 +29,32 @@ const getComentarioById = async (req, res) => {
 
 const createComentario = async (req, res, next) => {
   try {
-    const { usuarioId, contenido } = req.body;
+    const { contenido, usuarioId } = req.body;
     const { publicacionId } = req.params;
-    const usuario = await Usuario.findById(usuarioId);
-    const publicacion = await Publicacion.findById(publicacionId);
-    const nuevoComentario = await Comentario.create({
+
+    // Convertir usuarioId a ObjectId
+    const comentario = await Comentario.create({
       contenido,
-      usuarioId,
-      publicacionId
+      usuarioId: new mongoose.Types.ObjectId(usuarioId),
+      publicacionId: new mongoose.Types.ObjectId(publicacionId),
+      createdAt: new Date()
     });
-    await Publicacion.findByIdAndUpdate(publicacion._id, {
-      $push: { comentarios: nuevoComentario._id }
+
+    // Actualizar la publicación para guardar la referencia al comentario
+    await Publicacion.findByIdAndUpdate(publicacionId, {
+      $push: { comentarios: comentario._id }
     });
-    res.status(201).json(nuevoComentario);
-  } 
-  catch (error) {
+
+    // Volver a buscar el comentario populado con el usuario
+    const comentarioPopulado = await Comentario.findById(comentario._id)
+  .populate('usuarioId');
+
+    res.status(201).json(comentarioPopulado);
+  } catch (error) {
     next(error);
   }
 };
+
 
 const getComentariosByPublicacionId = async (req, res) => {
   try{

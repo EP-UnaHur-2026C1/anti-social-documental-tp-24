@@ -83,26 +83,30 @@ db.publicaciones.insertMany([
     contenido: "Estamos trabajando en un relato sobre la memoria de los barrios y las historias que quedaron en el archivo.",
     usuarioId: usuarioLucaId,
     tags: [tagDocumentalId, tagMemoriaId],
-    imagenes: [imagen1Id, imagen2Id]
+    imagenes: [imagen1Id, imagen2Id],
+    comentarios: []
   },
   {
     titulo: "Primer corte del documental",
     contenido: "Compartimos el primer corte con los colaboradores para recibir feedback sobre el ritmo y la narrativa.",
     usuarioId: usuarioNoraId,
     tags: [tagDocumentalId],
-    imagenes: [imagen3Id]
+    imagenes: [imagen3Id],
+    comentarios: []
   },
   {
     titulo: "Festival de relatos comunitarios",
     contenido: "El próximo encuentro reunirá a cineastas, investigadores y vecinos para discutir el valor del archivo audiovisual.",
     usuarioId: usuarioMartinId,
     tags: [tagFestivalId, tagCulturaId],
-    imagenes: []
+    imagenes: [],
+    comentarios: []
   }
 ]);
 
 const publicacionDocumental = db.publicaciones.findOne({ titulo: "Documental en construcción" });
 const publicacionCorte = db.publicaciones.findOne({ titulo: "Primer corte del documental" });
+const publicacionFestival = db.publicaciones.findOne({ titulo: "Festival de relatos comunitarios" });
 
 // Comentarios de ejemplo para mostrar interacción en la interfaz.
 db.comentarios.insertMany([
@@ -125,3 +129,21 @@ db.comentarios.insertMany([
     createdAt: new Date()
   }
 ]);
+
+const comentario1 = db.comentarios.findOne({ contenido: "Me encanta esta propuesta; la mirada sobre la memoria colectiva es muy fuerte." });
+const comentario2 = db.comentarios.findOne({ contenido: "Este material de archivo puede aportar muchísima riqueza al relato final." });
+const comentario3 = db.comentarios.findOne({ contenido: "Quisiera aportar imágenes del festival del año pasado para ampliar el contexto." });
+
+// Actualizar las publicaciones para incluir los comentarios recién creados.
+db.publicaciones.updateOne(
+  { _id: publicacionDocumental._id },
+  { $push: { comentarios: comentario1._id } }
+);
+db.publicaciones.updateOne(
+  { _id: publicacionDocumental._id },
+  { $push: { comentarios: comentario2._id } }
+);
+db.publicaciones.updateOne(
+  { _id: publicacionFestival._id },
+  { $push: { comentarios: comentario3._id } }
+);

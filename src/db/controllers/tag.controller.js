@@ -1,4 +1,5 @@
 const Tag = require('../../mongoSchemas/tagSchema');
+const Publicacion = require('../../mongoSchemas/publicacionSchema');
 const redisClient = require('../redis');
 
 const getTags = async (_, res) => {
@@ -38,16 +39,23 @@ const createTag = async (req, res, next) => {
 
 const addTagToPublicacion = async (req, res, next) => {
   try {
-    const { tagId } = req.body;
+    const { tag } = req.body;
     const { publicacionId } = req.params;
     const publicacion = await Publicacion.findById(publicacionId);
-    if (publicacion.tags.includes(tagId)) {
+    publicacion.tags = publicacion.tags.filter((id) => id);
+    let tagDoc = await Tag.findOne({ tag });
+    if (!tagDoc) {
+      tagDoc = await Tag.create({ tag });
+    }
+    const tagId = tagDoc._id;
+    const exists = publicacion.tags.some((id) => id && id.toString() === tagId.toString());
+    if (exists) {
       return res.status(400).json({ error: 'La etiqueta ya está asociada a esta publicación' });
     }
     publicacion.tags.push(tagId);
     await publicacion.save();
     res.status(201).json(publicacion);
-  } 
+  }
   catch (error) {
     next(error);
   }
